@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NK7 - GitHub Automation & Bot Service</title>
+<style>
+  /* Reset */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0; font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f9f9fb;
+    color: #1f2937;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  a {
+    color: #4f46e5;
+    text-decoration: none;
+  }
+  a:hover, a:focus {
+    text-decoration: underline;
+  }
+  header {
+    background: #4f46e5;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgb(0 0 0 / 0.1);
+  }
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 60px;
+  }
+  .logo {
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+  }
+  nav ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  nav ul li {
+    margin-left: 1.5rem;
+  }
+  nav a.button {
+    background-color: white;
+    color: #4f46e5;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-weight: 600;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  nav a.button:hover, nav a.button:focus {
+    background-color: #4338ca;
+    color: white;
+  }
+
+  main {
+    margin-top: 3rem;
+  }
+  .hero {
+    text-align: center;
+    padding: 4rem 1rem 6rem;
+    background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
+    color: white;
+    border-radius: 0 0 3rem 3rem;
+  }
+  .hero h1 {
+    font-size: 2.75rem;
+    max-width: 700px;
+    margin: 0 auto 1rem;
+    line-height: 1.1;
+    font-weight: 800;
+    letter-spacing: 1px;
+  }
+  .hero p {
+    font-size: 1.25rem;
+    line-height: 1.5;
+    max-width: 560px;
+    margin: 0 auto 2.5rem;
+    color: #e0e7ff;
+  }
+  .hero .btn-primary {
+    background-color: #fff;
+    color: #4f46e5;
+    padding: 1rem 2.5rem;
+    font-size: 1.125rem;
+    border: none;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 10px 15px -3px rgb(99 102 241 / 0.6);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  .hero .btn-primary:hover, .hero .btn-primary:focus {
+    background-color: #4338ca;
+    color: white;
+    outline: none;
+  }
+
+  section {
+    padding: 4rem 1rem;
+  }
+  h2.section-title {
+    text-align: center;
+    font-size: 2.25rem;
+    margin-bottom: 2rem;
+    font-weight: 700;
+  }
+
+  /* Features */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+    gap: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .feature-card {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 10px 15px rgb(0 0 0 / 0.05);
+    padding: 2rem;
+    text-align: center;
+    transition: transform 0.3s ease;
+    cursor: default;
+  }
+  .feature-card:hover {
+    transform: translateY(-8px);
+  }
+  .feature-icon {
+    font-size: 3rem;
+    color: #4f46e5;
+    margin-bottom: 1rem;
+  }
+  .feature-title {
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+  .feature-desc {
+    font-size: 1rem;
+    color: #4b5563;
+  }
+
+  /* Bot Hosts */
+  #bot-hosts .hosts-description {
+    text-align: center;
+    font-style: italic;
+    font-weight: 600;
+    color: #4f46e5;
+    margin-bottom: 1.5rem;
+  }
+  .hosts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(240px,1fr));
+    gap: 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .host-card {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 10px 15px rgb(0 0 0 / 0.05);
+    padding: 2rem;
+    text-align: center;
+    transition: transform 0.3s ease;
+    position: relative;
+  }
+  .host-card:hover {
+    transform: translateY(-6px);
+  }
+  .host-icon {
+    font-size: 3.5rem;
+    color: #4f46e5;
+    margin-bottom: 1rem;
+  }
+  .host-title {
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+  .host-desc {
+    font-size: 1rem;
+    color: #4b5563;
+    margin-bottom: 1rem;
+  }
+  .host-uptime-badge {
+    background-color: #22c55e;
+    color: white;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    box-shadow: 0 2px 5px rgb(0 0 0 / 0.15);
+  }
+
+  /* Pricing */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+    gap: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .plan-card {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 10px 15px rgb(0 0 0 / 0.05);
+    padding: 2.5rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: box-shadow 0.3s ease;
+  }
+  .plan-card:hover {
+    box-shadow: 0 15px 30px rgb(79 70 229 / 0.4);
+  }
+  .plan-name {
+    font-weight: 800;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #4f46e5;
+  }
+  .plan-price {
+    font-weight: 700;
+    font-size: 2.25rem;
+    margin-bottom: 1.25rem;
+  }
+  .plan-features {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 2rem;
+    color: #6b7280;
+    font-size: 1rem;
+    text-align: left;
+  }
+  .plan-features li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  .plan-features li:last-child {
+    border-bottom: none;
+  }
+  .btn-secondary {
+    background-color: #4f46e5;
+    color: white;
+    border: none;
+    padding: 0.85rem 1.75rem;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+  }
+  .btn-secondary:hover, .btn-secondary:focus {
+    background-color: #4338ca;
+    outline: none;
+  }
+
+  /* Testimonials */
+  .testimonials {
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .testimonial-item {
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 10px 15px rgb(0 0 0 / 0.05);
+    font-style: italic;
+    text-align: center;
+    color: #374151;
+    display: none;
+  }
+  .testimonial-item.active {
+    display: block;
+  }
+  .testimonial-author {
+    margin-top: 1.5rem;
+    font-weight: 700;
+    color: #4f46e5;
+  }
+  .testimonial-controls {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+    gap: 1rem;
+  }
+  .testimonial-btn {
+    background: #e0e7ff;
+    border: none;
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+    cursor: pointer;
+    font-weight: 700;
+    color: #4f46e5;
+    transition: background-color 0.3s ease;
+  }
+  .testimonial-btn:hover, .testimonial-btn:focus {
+    background-color: #4f46e5;
+    color: white;
+    outline: none;
+  }
+
+  /* Contact Section */
+  #contact p.contact-info {
+    font-size: 1.25rem;
+    text-align: center;
+    max-width: 450px;
+    margin: 0 auto;
+    color: #1f2937;
+  }
+  #contact p.contact-info svg {
+    vertical-align: middle;
+    margin-right: 0.5rem;
+    fill: #4f46e5;
+    width: 24px;
+    height: 24px;
+  }
+  #contact p.contact-info a {
+    font-weight: 700;
+    color: #4f46e5;
+  }
+  #contact p.contact-info a:hover, #contact p.contact-info a:focus {
+    text-decoration: underline;
+    outline: none;
+  }
+
+  /* Footer */
+  footer {
+    background: #1f2937;
+    color: #9ca3af;
+    padding: 2.5rem 1rem;
+    text-align: center;
+    font-size: 0.875rem;
+  }
+  footer a {
+    color: #4f46e5;
+    text-decoration: none;
+    margin: 0 0.25rem;
+    transition: color 0.3s ease;
+  }
+  footer a:hover, footer a:focus {
+    color: #c7d2fe;
+    outline: none;
+  }
+
+  @media (max-width: 600px) {
+    .hero h1 {
+      font-size: 2rem;
+    }
+    .hero p {
+      font-size: 1rem;
+    }
+  }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+<header>
+  <div class="container">
+    <nav aria-label="Primary Navigation">
+      <a href="#" class="logo" aria-label="NK7 Home">NK7</a>
+      <ul>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#bot-hosts">Bot Hosts</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#testimonials">Testimonials</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="#signup" class="button">Get Started</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero" role="banner" aria-labelledby="hero-title">
+    <h1 id="hero-title">Automate your GitHub workflow with NK7</h1>
+    <p>Boost your productivity by automating pull requests, issues, and GitHub actions with our smart bot service.</p>
+    <button class="btn-primary" aria-label="Start free trial">Start Free Trial</button>
+  </section>
+
+  <section id="features" aria-labelledby="features-title">
+    <h2 class="section-title" id="features-title">Features</h2>
+    <div class="features-grid">
+      <article class="feature-card" tabindex="0" aria-label="Smart pull request management">
+        <div class="feature-icon" aria-hidden="true">🤖</div>
+        <h3 class="feature-title">Smart Pull Request Management</h3>
+        <p class="feature-desc">Automatically merge, label, and manage your pull requests based on customizable rules.</p>
+      </article>
+      <article class="feature-card" tabindex="0" aria-label="Issue management and automation">
+        <div class="feature-icon" aria-hidden="true">📋</div>
+        <h3 class="feature-title">Issue Management & Automation</h3>
+        <p class="feature-desc">Automate issue triaging, labeling and responses so your team stays focused on what matters.</p>
+      </article>
+      <article class="feature-card" tabindex="0" aria-label="GitHub Actions & integration">
+        <div class="feature-icon" aria-hidden="true">🛠️</div>
+        <h3 class="feature-title">GitHub Actions Setup & Integration</h3>
+        <p class="feature-desc">Easily configure workflows and continuous integration pipelines with our bot-powered toolkit.</p>
+      </article>
+      <article class="feature-card" tabindex="0" aria-label="Prioritized notifications & analytics">
+        <div class="feature-icon" aria-hidden="true">📈</div>
+        <h3 class="feature-title">Prioritized Notifications & Analytics</h3>
+        <p class="feature-desc">Stay on top of important updates and analyze your repository activity for better decisions.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="bot-hosts" aria-labelledby="bot-hosts-title">
+    <h2 class="section-title" id="bot-hosts-title">Bot Hosts</h2>
+    <p class="hosts-description">Running 24/7 for continuous automation and reliability.</p>
+    <div class="hosts-grid">
+      <article class="host-card" tabindex="0" aria-label="GitHub Actions host">
+        <div class="host-icon" aria-hidden="true">🧑‍💻</div>
+        <h3 class="host-title">GitHub Actions</h3>
+        <p class="host-desc">Seamlessly run NK7 bots within GitHub's own CI/CD system to automate tasks natively.</p>
+        <div class="host-uptime-badge" aria-label="24/7 Uptime">24/7 Uptime</div>
+      </article>
+      <article class="host-card" tabindex="0" aria-label="AWS Lambda host">
+        <div class="host-icon" aria-hidden="true">☁️</div>
+        <h3 class="host-title">AWS Lambda</h3>
+        <p class="host-desc">Leverage serverless architecture on AWS to scale your automation efficiently and securely.</p>
+        <div class="host-uptime-badge" aria-label="24/7 Uptime">24/7 Uptime</div>
+      </article>
+      <article class="host-card" tabindex="0" aria-label="Azure Functions host">
+        <div class="host-icon" aria-hidden="true">🔄</div>
+        <h3 class="host-title">Azure Functions</h3>
+        <p class="host-desc">Deploy NK7 bots on Microsoft's serverless platform for flexible event-driven automation.</p>
+        <div class="host-uptime-badge" aria-label="24/7 Uptime">24/7 Uptime</div>
+      </article>
+      <article class="host-card" tabindex="0" aria-label="Google Cloud Functions host">
+        <div class="host-icon" aria-hidden="true">⚙️</div>
+        <h3 class="host-title">Google Cloud Functions</h3>
+        <p class="host-desc">Run your bots on Google Cloud's event-driven serverless environment with easy integration.</p>
+        <div class="host-uptime-badge" aria-label="24/7 Uptime">24/7 Uptime</div>
+      </article>
+    </div>
+  </section>
+
+  <section id="pricing" aria-labelledby="pricing-title">
+    <h2 class="section-title" id="pricing-title">Pricing</h2>
+    <div class="pricing-grid">
+      <section class="plan-card" aria-label="Free plan">
+        <h3 class="plan-name">Free</h3>
+        <p class="plan-price">$0<span style="font-size: 0.9rem;">/month</span></p>
+        <ul class="plan-features">
+          <li>Up to 3 Repositories</li>
+          <li>Basic Automation Scripts</li>
+          <li>Email Support</li>
+        </ul>
+        <button class="btn-secondary" aria-label="Select Free plan">Select Plan</button>
+      </section>
+      <section class="plan-card" aria-label="Pro plan">
+        <h3 class="plan-name">Pro</h3>
+        <p class="plan-price">$15<span style="font-size: 0.9rem;">/month</span></p>
+        <ul class="plan-features">
+          <li>Unlimited Repositories</li>
+          <li>Advanced Automation</li>
+          <li>Priority Email Support</li>
+          <li>Analytics Dashboard</li>
+        </ul>
+        <button class="btn-secondary" aria-label="Select Pro plan">Select Plan</button>
+      </section>
+      <section class="plan-card" aria-label="Enterprise plan">
+        <h3 class="plan-name">Enterprise</h3>
+        <p class="plan-price">Contact Us</p>
+        <ul class="plan-features">
+          <li>Custom Integrations</li>
+          <li>Dedicated Support</li>
+          <li>On-premises Deployment</li>
+          <li>Service Level Agreement</li>
+        </ul>
+        <button class="btn-secondary" aria-label="Contact us for Enterprise plan">Contact Sales</button>
+      </section>
+    </div>
+  </section>
+
+  <section id="testimonials" aria-labelledby="testimonials-title">
+    <h2 class="section-title" id="testimonials-title">What Our Users Say</h2>
+    <div class="testimonials" role="region" aria-live="polite">
+      <blockquote class="testimonial-item active" id="testimonial-1">
+        <p>“NK7 saved us countless hours automating repetitive GitHub tasks. The seamless integration and smart automation paid off immediately.”</p>
+        <footer class="testimonial-author">– Alice P., CTO at InnovateTech</footer>
+      </blockquote>
+      <blockquote class="testimonial-item" id="testimonial-2">
+        <p>“Our developer workflow is smoother and faster thanks to NK7. The issue management automation is a game-changer.”</p>
+        <footer class="testimonial-author">– James L., Lead Developer at CodeStream</footer>
+      </blockquote>
+      <blockquote class="testimonial-item" id="testimonial-3">
+        <p>“Reliable, easy to use, and powerful: NK7 is a must-have tool for any team serious about GitHub efficiency.”</p>
+        <footer class="testimonial-author">– Maria S., Product Manager at DevPro</footer>
+      </blockquote>
+    </div>
+    <div class="testimonial-controls" role="tablist" aria-label="Testimonial navigation">
+      <button class="testimonial-btn" aria-controls="testimonial-1" aria-selected="true" role="tab" tabindex="0" data-target="1">1</button>
+      <button class="testimonial-btn" aria-controls="testimonial-2" aria-selected="false" role="tab" tabindex="-1" data-target="2">2</button>
+      <button class="testimonial-btn" aria-controls="testimonial-3" aria-selected="false" role="tab" tabindex="-1" data-target="3">3</button>
+    </div>
+  </section>
+
+  <section id="contact" aria-labelledby="contact-title">
+    <h2 class="section-title" id="contact-title">Get in Touch</h2>
+    <p class="contact-info">
+      <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24">
+        <path d="M20.317 4.369A19.791 19.791 0 0015.555 3a.117.117 0 00-.11.056c-.665 1.163-1.443 2.677-1.981 3.875a19.814 19.814 0 00-5.54 0A12.98 12.98 0 007.527 6a.11.11 0 00-.107-.056c-1.42.174-2.756.763-3.953 1.71a.109.109 0 00-.05.095c-.17 2.109.683 4.077 1.949 5.674a.1.1 0 00.06.038c.82.1 1.644.153 2.46.158a.117.117 0 00.116-.078 7.715 7.715 0 01.374-.712 12.212 12.212 0 005.573 0c.156.249.302.51.435.783a.11.11 0 00.105.06c1.009-.008 1.984-.135 2.921-.392a.106.106 0 00.063-.04c1.268-1.596 2.017-3.563 1.848-5.672a.115.115 0 00-.048-.092zm-5.285 8.746a8.13 8.13 0 01-3.73-1.211l-.252-.15a.117.117 0 01-.038-.157c.159-.267.317-.535.468-.803a.07.07 0 00-.026-.094 7.09 7.09 0 01-1.061-1.613.108.108 0 01.044-.146c.176-.105.351-.21.52-.31a.116.116 0 01.12-.008c1.312.6 2.648.6 3.998 0a.116.116 0 01.113.007c.17.1.346.204.521.31a.109.109 0 01.044.146 7.059 7.059 0 01-1.06 1.61.07.07 0 00-.027.094c.152.27.31.54.468.807a.115.115 0 01-.038.156l-.25.152z"></path>
+      </svg>
+      Contact me on Discord: <a href="https://discordapp.com/users/j1wb" target="_blank" rel="noopener noreferrer">j1wb</a>
+    </p>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    &copy; 2024 NK7. All rights reserved. | 
+    <a href="#contact">Contact</a> | 
+    <a href="https://github.com/NK7" target="_blank" rel="noopener noreferrer">GitHub</a>
+  </div>
+</footer>
+
+<script>
+  // Testimonials slider logic
+  const testimonialButtons = document.querySelectorAll('.testimonial-btn');
+  const testimonials = document.querySelectorAll('.testimonial-item');
+
+  function setActiveTestimonial(index) {
+    testimonials.forEach((t, i) => {
+      t.classList.toggle('active', i === index);
+      testimonialButtons[i].setAttribute('aria-selected', i === index ? 'true' : 'false');
+      testimonialButtons[i].tabIndex = i === index ? 0 : -1;
+    });
+  }
+
+  testimonialButtons.forEach((btn, idx) => {
+    btn.addEventListener('click', () => setActiveTestimonial(idx));
+    btn.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        const nextIdx = (idx + 1) % testimonialButtons.length;
+        testimonialButtons[nextIdx].focus();
+        setActiveTestimonial(nextIdx);
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        const prevIdx = (idx - 1 + testimonialButtons.length) % testimonialButtons.length;
+        testimonialButtons[prevIdx].focus();
+        setActiveTestimonial(prevIdx);
+      }
+    });
+  });
+
+  setActiveTestimonial(0);
+
+</script>
+
+</body>
+</html>
+
